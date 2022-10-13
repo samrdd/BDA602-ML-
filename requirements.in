@@ -6,3 +6,4 @@ scipy
 joblib
 pyspark
 pyspark-stubs
+statsmodels
