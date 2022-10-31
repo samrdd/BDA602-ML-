@@ -10,7 +10,6 @@ import plotly.express as px
 import statsmodels.api
 from sklearn.ensemble import RandomForestRegressor
 
-
 # Using the different data to test the code
 
 def Cont_resp():
