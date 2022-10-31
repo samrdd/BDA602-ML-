@@ -1,1 +1,9 @@
 numpy
+pandas
+plotly
+scikit-learn
+scipy
+joblib
+pyspark
+pyspark-stubs
+statsmodels
