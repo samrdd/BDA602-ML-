@@ -10,7 +10,9 @@ import plotly.graph_objects as go
 from scipy.stats import chi2_contingency
 from sklearn.preprocessing import LabelEncoder
 import sqlalchemy
-
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
 
 def check_dtype(column):
     """Ckecks the datatype of a given column"""
@@ -902,64 +904,15 @@ def BruteForce_CatCont(df, predictors, response):
     return table
 
 
-def main():
-    """loading the data"""
-    db_user = "root"
-    db_pass = "root"
-    db_host = "localhost"
-    db_database = "baseball"
-    connect_string = f"mariadb+mariadbconnector://{db_user}:{db_pass}@{db_host}/{db_database}"
+def get_all_tables(df, predictors, response, Name):
 
-    sql_engine = sqlalchemy.create_engine(connect_string)
-
-    query = """
-                    SELECT * FROM baseball_game_stats
-                    """
-    df = pandas.read_sql_query(query, sql_engine)
-
-    predictors = ['stadium_id',
-                  'temperature_in_degrees',
-                  'Wind_in_mph',
-                  'wind_direction',
-                  'home_team_batting_avg',
-                  'away_team_batting_avg',
-                  'home_team_home_runs',
-                  'away_team_home_runs',
-                  'home_team_pitching_avg',
-                  'away_team_pitching_avg',
-                  'home_team_BABIP',
-                  'away_team_BABIP',
-                  'home_team_BAIP',
-                  'away_team_BAIP',
-                  'home_team_striketowalk',
-                  'away_team_striketowalk',
-                  'home_team_walktostrike',
-                  'away_team_walktostrike',
-                  'home_team_OBP',
-                  'away_team_OBP',
-                  'home_team_HCP',
-                  'away_team_HCP',
-                  'home_team_startingpitcher_WHIP',
-                  'away_team_startingpitcher_WHIP',
-                  'home_team_startingpitcher_K_per_9_inn',
-                  'away_team_startingpitcher_K_per_9_inn',
-                  'home_team_startingpitcher_BB_per_9_inn',
-                  'away_team_startingpitcher_BB_per_9_inn',
-                  'home_team_startingpitcher_H_per_9_inn',
-                  'away_team_startingpitcher_H_per_9_inn']
-
-    response = "winner"
-
-    Name = "Baseball"
-
-    """Checking and transforming the response"""
-    df = transform(df, response)
+    """Returns a html file of all tables"""
 
     """Getting the list of cat and cont predictors"""
     cat_predictors, cont_predictors = split_predictors(predictors, df)
 
     """creating a html file for output"""
-    file_html = open("MidTerm.html", "w")
+    file_html = open("Assignment5.html", "w")
 
     file_html.write(
         "<h1><center>Baseball Statistics</center></h1>"
@@ -1057,6 +1010,77 @@ def main():
 
     file_html.close()
 
+    return
+
+
+def main():
+
+    """loading the data"""
+    db_user = "root"
+    db_pass = "root"
+    db_host = "localhost"
+    db_database = "baseball"
+    connect_string = f"mariadb+mariadbconnector://{db_user}:{db_pass}@{db_host}/{db_database}"
+
+    sql_engine = sqlalchemy.create_engine(connect_string)
+
+    query = """
+                    SELECT * FROM baseball_game_stats
+                    """
+
+    df = pandas.read_sql_query(query, sql_engine)
+
+    predictors = ['HT_BA',
+                  'AT_BA',
+                  'HT_home_runs_per_hit',
+                  'AT_home_runs_per_hit',
+                  'HT_PA',
+                  'AT_PA',
+                  'HT_BABIP',
+                  'AT_BABIP',
+                  'HT_BAIP',
+                  'AT_BAIP',
+                  'HT_K_to_BB',
+                  'AT_K_to_BB',
+                  'HT_BB_to_K',
+                  'AT_BB_to_K',
+                  'HT_OBP',
+                  'AT_OBP',
+                  'HT_HCP',
+                  'AT_HCP',
+                  'HT_SP_WHIP',
+                  'AT_SP_WHIP',
+                  'HT_SP_K_per_9inn',
+                  'AT_SP_K_per_9inn',
+                  'HT_SP_BB_per_9_inn',
+                  'AT_SP_BB_per_9_inn',
+                  'HT_SP_H_per_9_inn',
+                  'AT_SP_H_per_9_inn']
+
+    response = "HT_Wins"
+
+    Name = "Baseball"
+
+    # getting all the stats
+
+    get_all_tables(df, predictors, response, Name)
+
+    """Splitting the data to test and train and applying a decision tree model """
+
+    X = df[predictors]
+
+    y=df[response]
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.33, random_state = 42)
+
+    model = DecisionTreeClassifier(criterion='gini', max_depth=3, random_state=0)
+
+    # fit the model
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    print('Model accuracy score with criterion gini index: {0:0.4f}'.format(accuracy_score(y_test, y_pred)))
 
 if __name__ == "__main__":
     sys.exit(main())
