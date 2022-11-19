@@ -1,8 +1,12 @@
-from CorrelationTables import *
+import numpy as np
+import pandas
+from BruteForce import split_predictors
+from CorrelationTables import correlation_ratio, cramers_V
+from Plots import heatmap
+from tablestyle import make_clickable, table_style
 
 
 class CorrelationMatrix:
-
     @staticmethod
     def cont_cont(dataframe, list):
 
@@ -106,7 +110,7 @@ class CorrelationMatrix:
         for var1 in cat_data:
             col = []
             for var2 in cont_data:
-                correlationratio = correlationratio(
+                correlationratio = correlation_ratio(
                     np.array(cat_data[var1]), np.array(cont_data[var2])
                 )  # Cramer's V test
                 col.append(

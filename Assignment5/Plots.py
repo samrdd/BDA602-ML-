@@ -1,10 +1,11 @@
-import plotly.express as px
 from itertools import combinations
-import pandas
 from pathlib import Path
-import plotly.graph_objects as go
+
 import numpy as np
-from sklearn.metrics import roc_curve, roc_auc_score
+import pandas
+import plotly.express as px
+import plotly.graph_objects as go
+from sklearn.metrics import roc_auc_score, roc_curve
 
 
 def plot_link(fig, name):
@@ -178,5 +179,3 @@ class Plot:
         url = plot_link(fig, title)
 
         return url
-
-

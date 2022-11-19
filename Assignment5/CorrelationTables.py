@@ -1,6 +1,12 @@
+import itertools
+
+import numpy as np
+import pandas
+from BruteForce import combinations, split_predictors
+from Plots import Plot
 from scipy.stats import chi2_contingency
-from BruteForce import *
 from sklearn.ensemble import RandomForestClassifier
+from tablestyle import make_clickable, table_style
 
 
 def cramers_V(var1, var2):
@@ -15,7 +21,7 @@ def cramers_V(var1, var2):
     ]  # Keeping of the test statistic of the Chi2 test
     obs = np.sum(cross_tab)  # Number of observations
     mini = (
-            min(cross_tab.shape) - 1
+        min(cross_tab.shape) - 1
     )  # Take the minimum value between the columns and the rows of the cross table
 
     return stat / (obs * mini)
@@ -46,7 +52,6 @@ def correlation_ratio(categories, values):
 
 
 class CorrelationTables:
-
     @staticmethod
     def cont_cont(df, predictors):
 
@@ -79,7 +84,7 @@ class CorrelationTables:
                     "Absolute Correlation Coefficient": abs_corr,
                     "Plot_link": url,
                 },
-                index=[0]
+                index=[0],
             )
 
             table = pandas.concat([table, table_new_row])
@@ -218,7 +223,7 @@ def random_forest_ranking(df, predictors, response):
 
         predictor = predictors[i]
 
-        url= Plot.violin(df, predictor, response)
+        url = Plot.violin(df, predictor, response)
 
         score = features_importance[i]
 
@@ -228,13 +233,11 @@ def random_forest_ranking(df, predictors, response):
                 "RF_VIMP": score,
                 "Violin Plot": url,
             },
-            index=[0]
+            index=[0],
         )
 
         table = pandas.concat([table, table_new_row])
-    table = table.sort_values(
-        by="RF_VIMP", ascending=False
-    ).reset_index(drop=True)
+    table = table.sort_values(by="RF_VIMP", ascending=False).reset_index(drop=True)
 
     table = table.style.format(
         {

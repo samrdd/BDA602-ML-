@@ -1,24 +1,36 @@
 import sys
-from Statistics import *
+
 import pandas
 import sqlalchemy
-from sklearn.model_selection import train_test_split
-from sklearn.model_selection import GridSearchCV
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import GaussianNB
+from Plots import Plot
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support, hamming_loss
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+    accuracy_score,
+    hamming_loss,
+    precision_recall_fscore_support,
+)
+from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from Statistics import Stats
+from tablestyle import make_clickable, table_style
 
 
 def data_loader():
+
+    """Loads the data from Mariadb"""
+
     db_user = "root"
-    db_pass = "root"
+    db_pass = "root"  # pragma: allowlist secret
     db_host = "localhost"
     db_database = "baseball"
-    connect_string = f"mariadb+mariadbconnector://{db_user}:{db_pass}@{db_host}/{db_database}"
+
+    connect_string = (
+        f"mariadb+mariadbconnector://{db_user}:{db_pass}@{db_host}/{db_database}"
+    )
 
     sql_engine = sqlalchemy.create_engine(connect_string)
 
@@ -27,7 +39,7 @@ def data_loader():
                     """
     df = pandas.read_sql_query(query, sql_engine)
 
-    df['HT_Wins'] = df['HT_Wins'].astype('int')
+    df["HT_Wins"] = df["HT_Wins"].astype("int")
 
     return df
 
@@ -53,9 +65,7 @@ def models_to_train(X_train, y_train):
 
     """Support Vector machine"""
 
-    param_grid = {'C': [0.1],
-                  'gamma': [1],
-                  'kernel': ['rbf']}
+    param_grid = {"C": [0.1], "gamma": [1], "kernel": ["rbf"]}
 
     svc_grid_search = GridSearchCV(SVC(), param_grid, refit=True, verbose=3)
 
@@ -89,7 +99,7 @@ def models_to_train(X_train, y_train):
 
     """Logistic Regression"""
 
-    model_4 = LogisticRegression(solver='liblinear', random_state=0)
+    model_4 = LogisticRegression(solver="liblinear", random_state=0)
 
     """Naive Bayes"""
 
@@ -99,19 +109,33 @@ def models_to_train(X_train, y_train):
 
     model_6 = RandomForestClassifier(random_state=42)
 
-    models = [model_1, model_01, model_2, model_02, model_3, model_03, model_4, model_5, model_6]
-    model_names = ['Decision Tree(GridSearch)', 'Decision Tree(Basic)',
-                   'SVM(GridSearch)', 'SVM(Basic)',
-                   'KNN(GridSearch)', 'KNN(Basic)',
-                   'Logistic Regression',
-                   'Naive Bayes',
-                   'Random Forest']
+    models = [
+        model_1,
+        model_01,
+        model_2,
+        model_02,
+        model_3,
+        model_03,
+        model_4,
+        model_5,
+        model_6,
+    ]
+    model_names = [
+        "Decision Tree(GridSearch)",
+        "Decision Tree(Basic)",
+        "SVM(GridSearch)",
+        "SVM(Basic)",
+        "KNN(GridSearch)",
+        "KNN(Basic)",
+        "Logistic Regression",
+        "Naive Bayes",
+        "Random Forest",
+    ]
 
     return models, model_names
 
 
 class Metrics:
-
     @staticmethod
     def model_scores(X_train, X_test, y_train, y_test):
         table = pandas.DataFrame(
@@ -142,17 +166,23 @@ class Metrics:
                     "Training_Accuracy": accuracy_score(y_train, y_pred_train),
                     "Testing_Accuracy": accuracy_score(y_test, y_pred_test),
                     "Hamming_Loss": hamming_loss(y_test, y_pred_test),
-                    "Precision": precision_recall_fscore_support(y_test, y_pred_test, average='weighted')[0],
-                    "Recall": precision_recall_fscore_support(y_test, y_pred_test, average='weighted')[1],
-                    "F1_Score": precision_recall_fscore_support(y_test, y_pred_test, average='weighted')[2],
+                    "Precision": precision_recall_fscore_support(
+                        y_test, y_pred_test, average="weighted"
+                    )[0],
+                    "Recall": precision_recall_fscore_support(
+                        y_test, y_pred_test, average="weighted"
+                    )[1],
+                    "F1_Score": precision_recall_fscore_support(
+                        y_test, y_pred_test, average="weighted"
+                    )[2],
                     "Roc_Curve": Plot.roc_curve(y_test, y_pred_test),
                 },
-                ignore_index=True
+                ignore_index=True,
             )
 
-        table = table.sort_values(
-            by="Testing_Accuracy", ascending=False
-        ).reset_index(drop=True)
+        table = table.sort_values(by="Testing_Accuracy", ascending=False).reset_index(
+            drop=True
+        )
 
         table = table.style.format(
             {
@@ -166,88 +196,45 @@ class Metrics:
 
 
 def main():
+
+    """loading the data"""
+
+    """Use your own password in data_loader function"""
     df = data_loader()
 
-    predictors = ['HT_BA',
-                  'AT_BA',
-                  'HT_home_runs_per_hit',
-                  'AT_home_runs_per_hit',
-                  'HT_PA',
-                  'AT_PA',
-                  'HT_BABIP',
-                  'AT_BABIP',
-                  'HT_BAIP',
-                  'AT_BAIP',
-                  'HT_K_to_BB',
-                  'AT_K_to_BB',
-                  'HT_BB_to_K',
-                  'AT_BB_to_K',
-                  'HT_OBP',
-                  'AT_OBP',
-                  'HT_HCP',
-                  'AT_HCP',
-                  'HT_SP_WHIP',
-                  'AT_SP_WHIP',
-                  'HT_SP_K_per_9inn',
-                  'AT_SP_K_per_9inn',
-                  'HT_SP_BB_per_9_inn',
-                  'AT_SP_BB_per_9_inn',
-                  'HT_SP_H_per_9_inn',
-                  'AT_SP_H_per_9_inn']
+    predictors = df.drop(
+        ["game_id", "HT_id", "AT_id", "local_date", "HT_Wins"], axis=1
+    ).columns.values.tolist()
 
     response = "HT_Wins"
 
     Stats.get_all_tables(df, predictors, response)
 
     """From the statistics I had observed the following,
-
-        - Correlation Tables
-
-        1. H_per_9_inn pitched is highly correlated with other predictors
-        2. As BABIP and BAIP are related to PA(pitching average) and BA(batting average) these are also correlated
-
-        SO from the above observations I am not using H_per_9inn and PA(as it is not a good statistic for a pitcher) 
-        predictors in the model building
-
-        Mean square difference tables
-
-        1. Starting pitcher stats are performing good both individually and in pairs as these are in the top of the 
-           tables     
-        """
-
+    - Correlation Tables
+    1. H_per_9_inn pitched is highly correlated with other predictors
+    2. As BABIP and BAIP are related to PA(pitching average) and BA(batting average) these are also correlatedSO from
+    the above observations I am not using H_per_9inn and PA(as it is not a good statistic for a pitcher) predictors in
+    the model building"""
+    """Mean square difference tables"""
+    """Starting pitcher stats are performing good both individually and in pairs as these are in the top of the tables
+    """
     """Splitting the data to test and train set
+    Note: As I had ordered the final table by local date, I am directly splitting the data
+    """
 
-        Note: As I had ordered the final table by local date, I am directly splitting the data
-
-        """
-
-    new_predictors = ['HT_BA',
-                      'AT_BA',
-                      'HT_home_runs_per_hit',
-                      'AT_home_runs_per_hit',
-                      'HT_BABIP',
-                      'AT_BABIP',
-                      'HT_BAIP',
-                      'AT_BAIP',
-                      'HT_K_to_BB',
-                      'AT_K_to_BB',
-                      'HT_BB_to_K',
-                      'AT_BB_to_K',
-                      'HT_OBP',
-                      'AT_OBP',
-                      'HT_HCP',
-                      'AT_HCP',
-                      'HT_SP_WHIP',
-                      'AT_SP_WHIP',
-                      'HT_SP_K_per_9inn',
-                      'AT_SP_K_per_9inn',
-                      'HT_SP_BB_per_9_inn',
-                      'AT_SP_BB_per_9_inn', ]
+    new_predictors = (
+        df[predictors]
+        .drop(["HT_SP_H_per_9_inn", "AT_SP_H_per_9_inn"], axis=1)
+        .columns.values.tolist()
+    )
 
     X = df[new_predictors]
     y = df[response]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, shuffle=False)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, shuffle=False
+    )
 
     """creating a html file for output of models"""
 
@@ -262,6 +249,30 @@ def main():
     metrics_table = Metrics.model_scores(X_train, X_test, y_train, y_test).to_html()
 
     file_html.write("<body><center>%s</center></body>" % metrics_table)
+
+    file_html.write("<h1><center>Summary of Models</center></h1>")
+
+    file_html.write(
+        "<h3><center>From the models, the Naive bayes has the highest accuracy of 51.86%</center></h3>"
+    )
+
+    file_html.write("<h1><center>Observations</center></h1>")
+
+    file_html.write(
+        "<h3><center>I had used decision tree basic and decision tree using hyper parameters,"
+        " I found that the decision tree without hyper parameter tuning had training accuracy of 99%"
+        "it means that the model is over fitted and this is similar in Random forest."
+        "</center></h3>"
+    )
+
+    file_html.write(
+        "<h3><center>Also, KNN performed"
+        " well on training data but not that good in testing data.</center></h3>"
+    )
+
+    file_html.write(
+        "<h3><center> SVM and Logistic Regression performed moderately</center></h3>"
+    )
 
     file_html.close()
 

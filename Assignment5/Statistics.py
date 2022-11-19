@@ -1,8 +1,9 @@
-from CorrelationMatrix import *
+from BruteForce import BruteForce, MeanSquareDifference, split_predictors
+from CorrelationMatrix import CorrelationMatrix
+from CorrelationTables import CorrelationTables, random_forest_ranking
 
 
 class Stats:
-
     @staticmethod
     def get_all_tables(df, predictors, response):
 
@@ -12,17 +13,21 @@ class Stats:
         """creating a html file for output"""
         file_html = open("Baseball_Statistics.html", "w")
 
+        file_html.write("<h1><center>Baseball Statistics</center></h1>")
+
         file_html.write(
-            "<h1><center>Baseball Statistics</center></h1>"
+            "<h2><center>Mean Square Difference table for Individual Predictors</center></h2>"
         )
 
-        file_html.write("<h2><center>Mean Square Difference table for Individual Predictors</center></h2>")
-
-        mean_square_diff_table = MeanSquareDifference.table(df, predictors, response).to_html()
+        mean_square_diff_table = MeanSquareDifference.table(
+            df, predictors, response
+        ).to_html()
 
         file_html.write("<body><center>%s</center></body>" % mean_square_diff_table)
 
-        file_html.write("<h1><center>Random Forest Variable importance ranking for Predictors</center></h1>")
+        file_html.write(
+            "<h2><center>Random Forest Variable importance ranking for Predictors</center></h2>"
+        )
 
         rf_vimp_table = random_forest_ranking(df, predictors, response).to_html()
 
@@ -35,11 +40,15 @@ class Stats:
 
         elif len(cont_predictors) > 1:
 
-            file_html.write("<h1><center>Continuous Vs Continuous Predictor Pairs</center></h1>")
+            file_html.write(
+                "<h1><center>Continuous Vs Continuous Predictor Pairs</center></h1>"
+            )
 
             file_html.write("<h2><center>Correlation Table</center></h2>")
 
-            cont_cont_corr_table = CorrelationTables.cont_cont(df, cont_predictors).to_html()
+            cont_cont_corr_table = CorrelationTables.cont_cont(
+                df, cont_predictors
+            ).to_html()
 
             file_html.write("<body><center>%s</center></body>" % cont_cont_corr_table)
 
@@ -55,7 +64,9 @@ class Stats:
                 df, predictors, response
             ).to_html()
 
-            file_html.write("<body><center>%s</center></body>" % cont_cont_bruteforce_table)
+            file_html.write(
+                "<body><center>%s</center></body>" % cont_cont_bruteforce_table
+            )
 
         """Checking if there are Categorical predictors in the list of predictors"""
 
@@ -83,9 +94,13 @@ class Stats:
 
             file_html.write("<h2><center>Brute Force Table</center></h2>")
 
-            cat_cat_bruteforce_table = BruteForce.cat_cat(df, predictors, response).to_html()
+            cat_cat_bruteforce_table = BruteForce.cat_cat(
+                df, predictors, response
+            ).to_html()
 
-            file_html.write("<body><center>%s</center></body>" % cat_cat_bruteforce_table)
+            file_html.write(
+                "<body><center>%s</center></body>" % cat_cat_bruteforce_table
+            )
 
         """Checking if there are Categorical and Continuous predictor pairs"""
 
@@ -117,7 +132,9 @@ class Stats:
                 df, predictors, response
             ).to_html()
 
-            file_html.write("<body><center>%s</center></body>" % cat_cont_bruteforce_table)
+            file_html.write(
+                "<body><center>%s</center></body>" % cat_cont_bruteforce_table
+            )
 
         file_html.close()
 

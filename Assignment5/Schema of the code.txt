@@ -1,0 +1,155 @@
+Schema of Assignment5:
+
+Assignment5.py : This is the main file of the assignment which has the main fnction with models and metrics.
+
+Plots.py : This file has all the codes related to plots including ROC curve plot
+
+Corelationmatrix.py : This file has the code related to corelation matrices of diferent pairs
+
+CorrelationTables.py : This file has the code related to correlation tables of different pairs
+
+BruteFroce.py : This has the brute force table calculations and plots
+
+tablestyle.py : This has the codes for styling the table 
+
+Statistics.py : This has the html code for printing all the tables in html
+
+
+
+
+
+Metadata of Baseball:
+
+
+Every statistics used in the baseball is of 200 days rolling average data
+
+HT_BA and AT_BA
+
+Batting averages of home team and away team
+
+				(Hit)/(Atbat) -- 200 days rolling 
+
+					- calculated from team_batting_counts table
+
+
+HT_Home_runs_per_hit and AT_Home_runs_per_hit
+
+				(Home_run)/(Hit) -- 200 days rolling
+
+					- Calculated from team_batting_counts table
+
+
+HT_PA and AT_PA
+
+pitching averages of hoem team and away team
+
+				(hit)/(ATbat) -- 200 days rolling
+
+				 	- calculated from team_pitching_stats table
+
+
+HT_BABIP and AT_BABIP
+
+BABIP (Batting Average on balls per play) of home and away teams
+
+
+				(H - HR)/(AB - K - HR + SF)
+
+					- Calculated from team_batting_counts table
+
+
+HT_BAIP and AT_BAIP
+
+				
+				(H - HR)/(AB - K - HR + SF)
+
+					- calculated from team_pitching_stats table
+
+
+HT_K_to_BB and AT_K_to_BB
+
+Walk to Strike out ratio of home team and away team
+
+				K/BB 
+
+					- calculated from team_batting_counts table 	
+
+
+HT_BB_to_K and AT_BB_to_K
+
+Walk to strike out ratio of home and away team
+
+				BB/K
+
+					- calculated from team_pitching_stats table
+
+
+HT_OBP and AT_OBP
+
+On Base Percentage of home and away team
+
+				
+				OBP = (H+BB+HBP)/ (AB+BB+HBP+SF)
+
+					- calculated from team_batting_counts table  
+
+
+HT_HCP and AT_HCP
+
+Hits per run of hom and away team
+
+				
+				HCP = Hit/ Runs Scored
+
+					- Calculated from box score table
+
+
+HT_SP_WHIP and AT_SP_WHIP
+
+Walks and hits per innings pitched for starting pitche of home and away team
+
+				
+				WHIP = BB + H \ IP
+
+					- calculated from pitcher_counts and game table
+
+
+HT_SP_K_per_9inn and AT_SP_K_per_9inn
+
+Strikeouts per 9 innings pitched for starting pitcher
+
+				K/9 = K * 9 / IP
+
+					- calculated from pitcher counts and game table
+
+
+HT_SP_BB_per_9_inn and AT_SP_BB_per_9_inn
+
+Walks per 9 innings pitched for starting pitcher
+
+				BB/9 = BB * 9 / IP
+
+					- calculated from pitcher counts and game table
+
+
+
+HT_SP_H_per_9_inn and AT_SP_H_per_9_inn
+
+Hits per 9 innings pitched for starting pitcher
+
+
+				H/9 = H * 9 / IP
+
+					- calculated from pitcher counts and game table
+
+
+
+
+
+
+
+
+
+
+
+

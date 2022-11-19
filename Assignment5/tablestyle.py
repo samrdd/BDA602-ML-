@@ -44,4 +44,3 @@ def table_style(table):
     )
 
     return table
-

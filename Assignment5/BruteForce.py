@@ -1,16 +1,20 @@
-from Plots import *
-from tablestyle import *
 import itertools
+from itertools import combinations
+
+import pandas
+import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from Plots import plot_link
+from tablestyle import make_clickable, table_style
 
 
 def check_datatype(column):
     """Ckecks the datatype of a given column"""
 
     if (
-            column.dtypes == "object"
-            or column.dtypes == "category"
-            or len(pandas.unique(column)) == 2
+        column.dtypes == "object"
+        or column.dtypes == "category"
+        or len(pandas.unique(column)) == 2
     ):
 
         return 0
@@ -45,7 +49,6 @@ def split_predictors(predictors, df):
 
 
 class MeanSquareDifference:
-
     @staticmethod
     def table(df, predictors, response):
 
@@ -84,7 +87,9 @@ class MeanSquareDifference:
             temp_df["BinCentre"] = (temp_df["LowerBin"] + temp_df["UpperBin"]) / 2
 
             bin_mean = temp_df.groupby(by=["LowerBin", "UpperBin", "BinCentre"]).mean()
-            bin_count = temp_df.groupby(by=["LowerBin", "UpperBin", "BinCentre"]).count()
+            bin_count = temp_df.groupby(
+                by=["LowerBin", "UpperBin", "BinCentre"]
+            ).count()
 
             mean_of_response_table["BinCount"] = bin_count[response]
             mean_of_response_table["BinMean"] = bin_mean[response]
@@ -92,7 +97,9 @@ class MeanSquareDifference:
             mean_of_response_table["Population_Mean"] = population_mean
 
             mean_of_response_table["Mean_diff"] = round(
-                mean_of_response_table["BinMean"] - mean_of_response_table["Population_Mean"], 6
+                mean_of_response_table["BinMean"]
+                - mean_of_response_table["Population_Mean"],
+                6,
             )
 
             mean_of_response_table["mean_squared_diff"] = round(
@@ -100,14 +107,17 @@ class MeanSquareDifference:
             )
 
             mean_of_response_table["Weight"] = (
-                    mean_of_response_table["BinCount"] / df[response].count()
+                mean_of_response_table["BinCount"] / df[response].count()
             )
             mean_of_response_table["mean_squared_diff_weighted"] = (
-                    mean_of_response_table["mean_squared_diff"] * mean_of_response_table["Weight"]
+                mean_of_response_table["mean_squared_diff"]
+                * mean_of_response_table["Weight"]
             )
             mean_of_response_table = mean_of_response_table.reset_index()
 
-            mean_of_response_table["mean_squared_diff"] = mean_of_response_table["mean_squared_diff"].mean()
+            mean_of_response_table["mean_squared_diff"] = mean_of_response_table[
+                "mean_squared_diff"
+            ].mean()
 
             mean_squared_diff = round(
                 (mean_of_response_table["mean_squared_diff"].sum()),
@@ -134,7 +144,9 @@ class MeanSquareDifference:
             )
 
             fig.add_trace(
-                go.Scatter(x=x_axis, y=mean_of_response_table["BinMean"], name="Bin Mean"),
+                go.Scatter(
+                    x=x_axis, y=mean_of_response_table["BinMean"], name="Bin Mean"
+                ),
                 secondary_y=False,
             )
 
@@ -151,18 +163,24 @@ class MeanSquareDifference:
                 )
             )
 
-            fig.add_hline(mean_of_response_table["Population_Mean"][0], line_color="green")
+            fig.add_hline(
+                mean_of_response_table["Population_Mean"][0], line_color="green"
+            )
 
             title = f"Bin Difference with Mean of Response vs Bin ({predictors[i]})"
             # Add figure title
-            fig.update_layout(title_text=f"<b>Bin Difference with Mean of Response of ({predictors[i]})<b>")
+            fig.update_layout(
+                title_text=f"<b>Bin Difference with Mean of Response of ({predictors[i]})<b>"
+            )
 
             # Set x-axis title
             fig.update_xaxes(title_text=f"<b>Predictor({predictors[i]}) Bin<b>")
 
             # Set y-axes titles
             fig.update_yaxes(title_text="<b>Population</b>", secondary_y=True)
-            fig.update_yaxes(title_text=f"<b>Response({response})</b>", secondary_y=False)
+            fig.update_yaxes(
+                title_text=f"<b>Response({response})</b>", secondary_y=False
+            )
 
             url = plot_link(fig, title)
 
@@ -257,7 +275,9 @@ class BruteForce:
             mean_of_response_table["Population_Mean"] = population_mean
 
             mean_of_response_table["Mean_diff"] = round(
-                mean_of_response_table["BinMean"] - mean_of_response_table["Population_Mean"], 6
+                mean_of_response_table["BinMean"]
+                - mean_of_response_table["Population_Mean"],
+                6,
             )
 
             mean_of_response_table["mean_squared_diff"] = round(
@@ -265,14 +285,17 @@ class BruteForce:
             )
 
             mean_of_response_table["Weight"] = (
-                    mean_of_response_table["BinCount"] / df[response].count()
+                mean_of_response_table["BinCount"] / df[response].count()
             )
             mean_of_response_table["mean_squared_diff_weighted"] = (
-                    mean_of_response_table["mean_squared_diff"] * mean_of_response_table["Weight"]
+                mean_of_response_table["mean_squared_diff"]
+                * mean_of_response_table["Weight"]
             )
             mean_of_response_table = mean_of_response_table.reset_index()
 
-            mean_of_response_table["mean_squared_diff"] = mean_of_response_table["mean_squared_diff"].mean()
+            mean_of_response_table["mean_squared_diff"] = mean_of_response_table[
+                "mean_squared_diff"
+            ].mean()
 
             mean_squared_diff = round(
                 (mean_of_response_table["mean_squared_diff"].sum()),
@@ -365,22 +388,26 @@ class BruteForce:
 
             mean_of_response_table["PopulationMean"] = population_mean
             diff_of_mean = (
-                    mean_of_response_table["BinMean"] - mean_of_response_table["PopulationMean"]
+                mean_of_response_table["BinMean"]
+                - mean_of_response_table["PopulationMean"]
             )
 
             mean_of_response_table["diff_of_mean"] = round(diff_of_mean, 6)
 
             mean_squared_difference = (
-                                              mean_of_response_table["BinMean"] - mean_of_response_table[
-                                          "PopulationMean"]
-                                      ) ** 2
+                mean_of_response_table["BinMean"]
+                - mean_of_response_table["PopulationMean"]
+            ) ** 2
 
-            mean_of_response_table["mean_squared_diff"] = round(mean_squared_difference, 6)
+            mean_of_response_table["mean_squared_diff"] = round(
+                mean_squared_difference, 6
+            )
             mean_of_response_table["Weight"] = (
-                    mean_of_response_table["BinCount"] / df[comb[i][0]].count()
+                mean_of_response_table["BinCount"] / df[comb[i][0]].count()
             )
             mean_of_response_table["mean_squared_diff_weighted"] = (
-                    mean_of_response_table["mean_squared_diff"] * mean_of_response_table["Weight"]
+                mean_of_response_table["mean_squared_diff"]
+                * mean_of_response_table["Weight"]
             )
             mean_of_response_table = mean_of_response_table.reset_index()
 
@@ -488,7 +515,9 @@ class BruteForce:
             mean_of_response_table["PopulationMean"] = population_mean
 
             mean_of_response_table["Mean_diff"] = round(
-                mean_of_response_table["BinMean"] - mean_of_response_table["PopulationMean"], 6
+                mean_of_response_table["BinMean"]
+                - mean_of_response_table["PopulationMean"],
+                6,
             )
 
             mean_squared_difference = (mean_of_response_table["Mean_diff"]) ** 2
@@ -496,14 +525,17 @@ class BruteForce:
             mean_of_response_table["mean_squared_diff"] = mean_squared_difference
 
             mean_of_response_table["Weight"] = (
-                    mean_of_response_table["BinCount"] / df[comb[i][1]].count()
+                mean_of_response_table["BinCount"] / df[comb[i][1]].count()
             )
             mean_of_response_table["mean_squared_diff_weighted"] = (
-                    mean_of_response_table["mean_squared_diff"] * mean_of_response_table["Weight"]
+                mean_of_response_table["mean_squared_diff"]
+                * mean_of_response_table["Weight"]
             )
             mean_of_response_table = mean_of_response_table.reset_index()
 
-            mean_of_response_table["mean_squared_diff"] = mean_of_response_table["mean_squared_diff"].mean()
+            mean_of_response_table["mean_squared_diff"] = mean_of_response_table[
+                "mean_squared_diff"
+            ].mean()
 
             mean_squared_diff = round(
                 (mean_of_response_table["mean_squared_diff"].sum()),
