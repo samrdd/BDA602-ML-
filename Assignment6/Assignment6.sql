@@ -39,4 +39,4 @@ SELECT t1.batter,
     AND t2.local_date< t1.local_date AND t1.game_id = 12560
  GROUP BY t1.batter, t1.local_date;
 
-SELECT * FROM f_rolling_battingavg LIMIT 0,20;
+SELECT * FROM f_rolling_battingavg;

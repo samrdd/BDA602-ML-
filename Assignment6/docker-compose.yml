@@ -1,4 +1,4 @@
-version: "3.3"
+version: "2.1"
 
 services:
   mariadb1:
@@ -21,6 +21,5 @@ services:
       context: .
       dockerfile: Dockerfile
     image: baseball
-    restart: unless-stopped
     volumes:
       - "./mystuff:/app/mystuff"

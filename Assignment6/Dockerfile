@@ -15,10 +15,9 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # copying the files
-COPY database.sql .
+COPY baseball.sql .
 COPY Assignment6.sql .
-COPY script.sh .
+COPY Assignment6.sh .
 
 # Running the script
-#RUN chmod +x script.sh
-ENTRYPOINT ["/bin/bash", "script.sh"]
+ENTRYPOINT ["/bin/bash", "Assignment6.sh"]
