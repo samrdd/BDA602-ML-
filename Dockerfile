@@ -16,8 +16,8 @@ RUN apt-get update \
 
 # copying the files
 COPY baseball.sql .
-COPY Assignment6.sql .
-COPY Assignment6.sh .
+COPY Assignment6/Assignment6.sql .
+COPY Assignment6/Assignment6.sh .
 
 # Running the script
 ENTRYPOINT ["/bin/bash", "Assignment6.sh"]
