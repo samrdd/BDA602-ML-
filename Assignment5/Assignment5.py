@@ -203,7 +203,7 @@ def main():
     df = data_loader()
 
     predictors = df.drop(
-        ["game_id","local_date", "HT_Wins"], axis=1
+        ["game_id", "local_date", "HT_Wins"], axis=1
     ).columns.values.tolist()
 
     response = "HT_Wins"

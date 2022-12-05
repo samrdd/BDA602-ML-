@@ -6,8 +6,6 @@ from pathlib import Path
 
 import numpy
 import pandas as pd
-
-
 import statsmodels
 from pandas import DataFrame, Series
 from plotly import express as px
