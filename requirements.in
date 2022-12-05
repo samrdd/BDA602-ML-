@@ -1,9 +1,12 @@
 numpy
 pandas
-plotly
+pydataset
 scikit-learn
-scipy
-joblib
 pyspark
 pyspark-stubs
+seaborn
+plotly
+mariadb
 statsmodels
+sqlalchemy
+sklearn
