@@ -4,7 +4,7 @@ import warnings
 import pandas
 import sqlalchemy
 from Plots import Plot
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     accuracy_score,
@@ -127,7 +127,15 @@ def models_to_train(X_train, y_train):
 
     pipe7 = Pipeline([("scaler", StandardScaler()), ("model", NN_model)])
 
-    pipe7 = pipe6.fit(X_train, y_train)
+    pipe7 = pipe7.fit(X_train, y_train)
+
+    GBclf = GradientBoostingClassifier(
+        n_estimators=100, learning_rate=1.0, max_depth=1, random_state=0
+    )
+
+    pipe8 = Pipeline([("scaler", StandardScaler()), ("model", GBclf)])
+
+    pipe8 = pipe8.fit(X_train, y_train)
 
     model_names = [
         "Decision Tree(Basic)",
@@ -137,9 +145,10 @@ def models_to_train(X_train, y_train):
         "Naive Bayes",
         "Random Forest",
         "Neural Networks",
+        "Gradient Boosting",
     ]
 
-    pipelines = [pipe1, pipe2, pipe3, pipe4, pipe5, pipe6, pipe7]
+    pipelines = [pipe1, pipe2, pipe3, pipe4, pipe5, pipe6, pipe7, pipe8]
 
     return model_names, pipelines
 
@@ -313,6 +322,8 @@ def main():
 
     results2 = Metrics.model_scores(X_train1, X_test1, y_train1, y_test1).to_html()
 
+    # removing the predictors with corr > 0.95
+
     predictors2 = df.drop(
         [
             "game_id",
@@ -375,6 +386,39 @@ def main():
 
     results3 = Metrics.model_scores(X_train2, X_test2, y_train2, y_test2).to_html()
 
+    # to 20 predictors
+    predictors_20 = df[
+        [
+            "AT_100_WHIP",
+            "PE_K_50_diff",
+            "AT_50_PE",
+            "AT_100_K_9IP",
+            "HT_100_OBA",
+            "AT_50_K_9IP",
+            "HT_50_WHIP",
+            "AT_100_K_BB",
+            "HT_50_OBA",
+            "HT_100_WHIP",
+            "AT_50_ERA",
+            "AT_50_WHIP",
+            "AT_100_ERA",
+            "100_PE_diff",
+            "50_PE_diff",
+            "HT_100_PE",
+            "PE_K_100_diff",
+            "AT_100_PE",
+            "HT_50_H_9IP",
+            "HT_50_PE",
+            "HT_100_H_9IP",
+            "AT _50_K_BB",
+            "PE_K_diff",
+        ]
+    ].columns.values.tolist()
+
+    X_train3, X_test3, y_train3, y_test3 = split_data(df, predictors_20, response)
+
+    results4 = Metrics.model_scores(X_train3, X_test3, y_train3, y_test3).to_html()
+
     """creating a html file for output of models"""
 
     file_html = open("./results/Baseball_Models_Output.html", "w")
@@ -398,6 +442,10 @@ def main():
     )
 
     file_html.write("<body><center>%s</center></body>" % results3)
+
+    file_html.write("<h2><center>Metrics of top 20 performing features</center></h2>")
+
+    file_html.write("<body><center>%s</center></body>" % results4)
 
     file_html.close()
 

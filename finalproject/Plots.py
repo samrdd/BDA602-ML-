@@ -31,7 +31,7 @@ def heatmap(correlation_matrix, title):
             z=np.array(correlation_matrix),
             text=correlation_matrix.values,
             texttemplate="%{text}",
-            colorscale="RdBu",
+            colorscale="RdBu_r",
         )
     )
 
@@ -94,7 +94,7 @@ class Plot:
 
         fig = px.imshow(confusion_matrix, text_auto=True, aspect="auto")
 
-        title = f"{variable1} Vs {variable1}"
+        title = f"{variable1} Vs {variable2}"
         fig.update_layout(
             title=title,
         )
@@ -109,16 +109,16 @@ class Plot:
 
         fig1 = px.histogram(
             df,
-            x=df[variable1],
+            x=df[variable2],
             color=df[variable2],
             marginal="rug",
             hover_data=df.columns,
         )
-        title = f"Distribution Plot of {variable2} by {variable1}"
+        title = f"Distribution Plot of {variable1} by {variable2}"
         fig1.update_layout(
             title=title,
-            xaxis_title=f"{variable2}",
-            yaxis_title=f"{variable1}",
+            xaxis_title=f"{variable1}",
+            yaxis_title=f"{variable2}",
         )
         # saving the url of the plot
         url1 = plot_link(fig1, title)

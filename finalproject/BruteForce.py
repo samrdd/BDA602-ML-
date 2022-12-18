@@ -143,7 +143,7 @@ class BruteForce:
                     z=mean_of_response_table["Mean_diff"],
                     text=mean_of_response_table["Mean_diff"],
                     texttemplate="%{text}",
-                    colorscale="RdBu",
+                    colorscale="RdBu_r",
                 )
             )
 
@@ -252,7 +252,7 @@ class BruteForce:
                     z=mean_of_response_table["mean_squared_diff"],
                     text=mean_of_response_table["mean_squared_diff"],
                     texttemplate="%{text}",
-                    colorscale="RdBu",
+                    colorscale="RdBu_r",
                 )
             )
 
@@ -371,7 +371,7 @@ class BruteForce:
                     z=mean_of_response_table["mean_squared_diff"],
                     text=mean_of_response_table["Mean_diff"],
                     texttemplate="%{text}",
-                    colorscale="RdBu",
+                    colorscale="RdBu_r",
                 )
             )
 

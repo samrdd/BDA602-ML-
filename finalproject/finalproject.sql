@@ -357,7 +357,7 @@ SELECT s_team_stats.game_id as game_id,
        JOIN s_starting_pitcher_100_rolling_stats sp1
        ON s_team_stats.HT_id = sp1.team_id AND s_team_stats.game_id = sp1.game_id
        JOIN s_starting_pitcher_50_rolling_stats sp
-       ON s_team_stats.HT_id = sp.team_id AND s_team_stats.game_id = SP.game_id;
+       ON s_team_stats.HT_id = sp.team_id AND s_team_stats.game_id = sp.game_id;
 
 
 DROP TABLE IF EXISTS baseball_team_stats;
@@ -464,7 +464,7 @@ SELECT s_home_team_stats.game_id,
        JOIN s_starting_pitcher_100_rolling_stats sp1
        ON s_home_team_stats.AT_id = sp1.team_id AND s_home_team_stats.game_id = sp1.game_id
        JOIN s_starting_pitcher_50_rolling_stats sp
-       ON s_home_team_stats.AT_id = sp.team_id AND s_home_team_stats.game_id = SP.game_id
+       ON s_home_team_stats.AT_id = sp.team_id AND s_home_team_stats.game_id = sp.game_id
        JOIN s_home_team_HCP
        ON s_home_team_HCP.HT_id = s_home_team_stats.HT_id AND s_home_team_stats.game_id = s_home_team_HCP.game_id
        JOIN s_away_team_HCP
