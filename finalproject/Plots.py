@@ -109,16 +109,16 @@ class Plot:
 
         fig1 = px.histogram(
             df,
-            x=df[variable2],
+            x=df[variable1],
             color=df[variable2],
             marginal="rug",
             hover_data=df.columns,
         )
-        title = f"Distribution Plot of {variable1} by {variable2}"
+        title = f"Distribution Plot of {variable2} by {variable1}"
         fig1.update_layout(
             title=title,
-            xaxis_title=f"{variable1}",
-            yaxis_title=f"{variable2}",
+            xaxis_title=f"{variable2}",
+            yaxis_title=f"{variable1}",
         )
         # saving the url of the plot
         url1 = plot_link(fig1, title)
