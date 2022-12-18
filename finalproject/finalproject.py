@@ -417,7 +417,7 @@ def main():
             "HT_50_H_9IP",
             "HT_50_PE",
             "HT_100_H_9IP",
-            "AT _50_K_BB",
+            "AT_50_K_BB",
             "PE_K_diff",
         ]
     ].columns.values.tolist()
