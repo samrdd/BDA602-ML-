@@ -235,6 +235,8 @@ def main():
     """Use your own password in data_loader function"""
     df = data_loader()
 
+    print("data loaded to python data frame")
+
     df = clean_data(df)
 
     # query = """SELECT * FROM baseball_team_stats"""
@@ -263,6 +265,8 @@ def main():
     ).columns.values.tolist()
 
     response = "HT_Wins"
+
+    print("started calculation feature importance it may take around 20 min")
 
     Stats.get_all_tables(df, predictors, response)
 
@@ -317,6 +321,9 @@ def main():
         ],
         axis=1,
     ).columns.values.tolist()
+
+    print("started training the models mean while you can se the analytics")
+    print("results will be primted soon")
 
     X_train1, X_test1, y_train1, y_test1 = split_data(df, predictors1, response)
 
@@ -448,6 +455,8 @@ def main():
     file_html.write("<body><center>%s</center></body>" % results4)
 
     file_html.close()
+
+    print("Awsome everything done, now you can check the results")
 
 
 if __name__ == "__main__":
