@@ -193,7 +193,6 @@ class MeanSquareDifference:
                 },
                 ignore_index=True,
             )
-
         table = table.sort_values(
             by="Difference with Mean of Response(Weighted)", ascending=False
         ).reset_index(drop=True)

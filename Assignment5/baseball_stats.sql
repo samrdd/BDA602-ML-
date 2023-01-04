@@ -52,10 +52,11 @@ CREATE TABLE s_team_bat_rolling_avg
                IF (SUM(t2.b_AtBat)=0,0,SUM(t2.b_Hit)/(SUM(t2.b_AtBat))) AS t_rolling_battingaverage
             FROM s_team_batting_stats AS t1 JOIN s_team_batting_stats AS t2
             ON t1.team_id= t2.team_id
-            WHERE t2.local_date >= DATE_ADD(t1.local_date, INTERVAL -200 DAY)
+            WHERE t2.local_date >= DATE_ADD(t1.local_date, INTERVAL -100 DAY)
             AND t2.local_date< t1.local_date
          GROUP BY t1.team_id, t1.local_date,t1.game_id
          ORDER BY t1.team_id, t1.local_date,t1.game_id;
+
 
 -- calculating the rolling pitching average of each team of 200 days
 

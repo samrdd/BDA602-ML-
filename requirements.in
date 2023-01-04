@@ -1,12 +1,11 @@
 numpy
 pandas
-pydataset
 scikit-learn
-pyspark
-pyspark-stubs
 seaborn
 plotly
-mariadb
+mariadb==1.0.11
 statsmodels
-sqlalchemy
+sqlalchemy==2.0.0b4
 sklearn
+pyspark
+Jinja2
